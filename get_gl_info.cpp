@@ -39,18 +39,21 @@ main (int argc, char* argv[])
 	int indent = 0;
 	add_line(json_stream, "{", indent++);
 	// OpenGL version
-	curr_stream << "\"OpenGL_version\" : \"" << major_version << "." << minor_version << "\",";
+	curr_stream << "\"GL_VERSION\" : \"" << ogl_version << "\",";
 	add_line(json_stream, curr_stream, indent);
-	curr_stream << "\"OpenGL_version_alt\" : \"" << ogl_version << "\",";
+    // OpenGL major and minor versions
+	curr_stream << "\"GL_MAJOR_VERSION\" : \"" << major_version << "\",";
+	add_line(json_stream, curr_stream, indent);
+	curr_stream << "\"GL_MINOR_VERSION\" : \"" << minor_version << "\",";
 	add_line(json_stream, curr_stream, indent);
 	// GLSL version
-	curr_stream << "\"GLSL_version\" : \"" << glsl_version << "\",";
+	curr_stream << "\"GL_SHADING_LANGUAGE_VERSION\" : \"" << glsl_version << "\",";
 	add_line(json_stream, curr_stream, indent);
 	// Vendor
-	curr_stream << "\"Vendor\" : \"" << vendor << "\",";
+	curr_stream << "\"GL_VENDOR\" : \"" << vendor << "\",";
 	add_line(json_stream, curr_stream, indent);
 	// Device
-	curr_stream << "\"Device\" : \"" << renderer << "\",";
+	curr_stream << "\"GL_RENDERER\" : \"" << renderer << "\",";
 	add_line(json_stream, curr_stream, indent);
 	// Supported GLSL versions
 	curr_stream << "\"Supported_GLSL_versions\" : [";
