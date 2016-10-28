@@ -29,7 +29,7 @@ exception_handler(LPEXCEPTION_POINTERS p)
 
 int
 runtime_check_handler(int errorType, const char *filename, int linenumber,
-		      const char *moduleName, const char *format, ...)
+              const char *moduleName, const char *format, ...)
 {
   printf("Error type %d at %s line %d in %s", errorType, filename, linenumber, moduleName);
   exit(1);
@@ -42,6 +42,10 @@ runtime_check_handler(int errorType, const char *filename, int linenumber,
 #define OUTPUT_IMAGE_MAX_LINE_LEN 70
 #define OUTPUT_IMAGE_MAX_PIXEL_VAL_LEN 4
 #define OUTPUT_IMAGE_MAX_PIXEL_VAL 255
+
+#define COMPILE_ERROR_EXIT_CODE 101
+#define LINK_ERROR_EXIT_CODE 102
+#define RENDER_ERROR_EXIT_CODE 103
 
 std::string terminate_flag = "",
   output = "output.png",
@@ -65,24 +69,24 @@ parse_args(int argc, char* argv[])
     curr_arg = std::string(argv[i]);
     if (!curr_arg.compare(0, 2, "--")) {
       if (!curr_arg.compare("--persist")) {
-	persist = true;
-	continue;
+    persist = true;
+    continue;
       }
       else if (!curr_arg.compare("--animate")) {
-	animate = true;
-	continue;
+    animate = true;
+    continue;
       }
       else if (!curr_arg.compare("--exit_compile")) {
-	exit_compile = true;
-	continue;
+    exit_compile = true;
+    continue;
       }
       else if (!curr_arg.compare("--exit_linking")) {
-	exit_linking = true;
-	continue;
+    exit_linking = true;
+    continue;
       }
       else if (!curr_arg.compare("--output")) {
-	output = argv[++i];
-	continue;
+    output = argv[++i];
+    continue;
       }
       printf("Unknown argument %s\n", curr_arg.c_str());
       continue;
@@ -97,7 +101,7 @@ parse_args(int argc, char* argv[])
 }
 
 void
-report_error_and_exit(GLuint oglPrg)
+report_error_and_exit(GLuint oglPrg, int exitCode)
 {
   GLint maxLength = 0;
   glGetShaderiv(oglPrg, GL_INFO_LOG_LENGTH, &maxLength);
@@ -105,14 +109,14 @@ report_error_and_exit(GLuint oglPrg)
   // The maxLength includes the NULL character
   std::vector<GLchar> errorLog(maxLength);
   glGetShaderInfoLog(oglPrg, maxLength, &maxLength, &errorLog[0]);
-  
+
   // Provide the infolog in whatever manor you deem best.
   for (GLchar c : errorLog)
     std::cout << c;
   std::cout << "\n";
   // Exit with failure.
   glDeleteShader(oglPrg);
-  exit(1);
+  exit(exitCode);
 }
 
 void
@@ -143,8 +147,7 @@ void init(std::string vertexShader, std::string fragmentShader)
   glGetShaderiv(shd0, GL_COMPILE_STATUS, &compile_ok);
   if (!compile_ok) {
     fprintf(stderr, "Error compiling vertex shader\n");
-    report_error_and_exit(shd0);
-    exit(1);
+    report_error_and_exit(shd0, 1);
   }
   fprintf(stderr, "Vertex shader compiled successfully\n");
   glAttachShader(program, shd0);
@@ -167,7 +170,7 @@ void init(std::string vertexShader, std::string fragmentShader)
   glGetShaderiv(shd1, GL_COMPILE_STATUS, &compile_ok);
   if (!compile_ok) {
     fprintf(stderr, "Error compiling fragment shader\n");
-    report_error_and_exit(shd1);
+    report_error_and_exit(shd1, COMPILE_ERROR_EXIT_CODE);
   }
   fprintf(stderr, "Fragment shader compiled successfully\n");
   if (exit_compile) {
@@ -182,7 +185,7 @@ void init(std::string vertexShader, std::string fragmentShader)
   glGetProgramiv(program, GL_LINK_STATUS, &compile_ok);
   if (!compile_ok) {
     fprintf(stderr, "Error in linking program\n");
-    report_error_and_exit(program);
+    report_error_and_exit(program, LINK_ERROR_EXIT_CODE);
   }
   fprintf(stderr, "Program linked successfully\n");
   if (exit_linking) {
@@ -255,9 +258,9 @@ void idle()
     saved = true;
     std::vector<std::uint8_t> data(WIDTH * HEIGHT * CHANNELS);
     glReadPixels(0, 0, WIDTH, HEIGHT, GL_RGBA, GL_UNSIGNED_BYTE, &data[0]);
-	unsigned png_error = lodepng::encode(output, data, WIDTH, HEIGHT);
-	if (png_error)
-		printf("Error producing PNG file: %s", lodepng_error_text(png_error));
+    unsigned png_error = lodepng::encode(output, data, WIDTH, HEIGHT);
+    if (png_error)
+        printf("Error producing PNG file: %s", lodepng_error_text(png_error));
     if (persist)
       printf("Press any key to exit...\n");
     else
