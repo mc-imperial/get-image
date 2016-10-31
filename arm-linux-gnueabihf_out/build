@@ -1,0 +1,11 @@
+#!/bin/bash
+set -x
+set -e
+set -u
+
+mkdir -p temp
+cd temp
+cmake -G "Unix Makefiles" ../.. -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=../arm-linux-gnueabihf_out.cmake
+cmake --build . --config Release
+cmake -DCMAKE_INSTALL_PREFIX=../install -P cmake_install.cmake
+
