@@ -1,0 +1,14 @@
+image: ubuntu:14.04
+before_script:
+  - apt-get update -y
+  - apt-get -y install gcc-mingw-w64 python cmake libxi-dev
+
+build:
+  script:
+    - cd linux_out && ./build
+    - cd x86_64-w64-mingw32_out && ./build
+  artifacts:
+    paths:
+      - linux_out/install/bin
+      - x86_64-w64-mingw32_out/install/bin
+
