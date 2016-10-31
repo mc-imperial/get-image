@@ -7,6 +7,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules/" ${CMAKE_MODULE_PATH})
 find_package(OpenGL REQUIRED)
 
 include(ExternalProject)
+INCLUDE(GNUInstallDirs)
 
 ExternalProject_Add(
 	GLUT
@@ -15,6 +16,7 @@ ExternalProject_Add(
 		-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
 		-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
 		-DFREEGLUT_REPLACE_GLUT=0
+		-DFREEGLUT_BUILD_DEMOS=0
 	INSTALL_COMMAND cmake -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/install -P cmake_install.cmake
 	)
 
@@ -59,8 +61,8 @@ elseif(UNIX)
 		find_package(X11 REQUIRED)
 		set(
 		LINK_LIBS 
-		"${CMAKE_BINARY_DIR}/install/lib/libfreeglut.a" 
-		"${CMAKE_BINARY_DIR}/install/lib/libGLEW.a"
+		"${CMAKE_BINARY_DIR}/install/${CMAKE_INSTALL_LIBDIR}/libfreeglut.a" 
+		"${CMAKE_BINARY_DIR}/install/${CMAKE_INSTALL_LIBDIR}/libGLEW.a"
 		${OPENGL_gl_LIBRARY}
 		${X11_LIBRARIES}
 		${X11_Xxf86vm_LIB}
