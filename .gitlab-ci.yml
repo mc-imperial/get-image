@@ -1,7 +1,7 @@
 image: ubuntu:14.04
 before_script:
   - apt-get update -y
-  - apt-get -y install gcc-mingw-w64 python cmake libxi-dev g++ libgl1-mesa-dev libglu1-mesa-dev ruby-dev
+  - apt-get -y install gcc-mingw-w64 python cmake libxi-dev g++ libgl1-mesa-dev libglu1-mesa-dev zip ruby-dev
   - gem install dpl
 
 stages:
