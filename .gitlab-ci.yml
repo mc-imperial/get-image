@@ -21,5 +21,5 @@ build:
     - cp $(find x86_64-w64-mingw32_out/install -type f) out/bin/Windows/
     - cd out
     - zip get_image.zip $(find . -type f)
-    - dpl --provider=releases --api-key=$GITHUB_RELEASES_API_KEY --repo=paulthomson/get-image --file=get_image.zip --release-number="v-$CI_BUILD_REF"
+    - dpl --provider=releases --skip_cleanup --api-key=$GITHUB_RELEASES_API_KEY --repo=paulthomson/get-image --file=get_image.zip --release-number="v-$CI_BUILD_REF"
 
