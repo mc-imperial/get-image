@@ -1,8 +1,9 @@
 image: ubuntu:14.04
 before_script:
   - apt-get update -y
-  - apt-get -y install gcc-mingw-w64 python cmake libxi-dev g++ libgl1-mesa-dev libglu1-mesa-dev zip ruby-dev git
-  - gem install dpl
+  - apt-get -y install gcc-mingw-w64 python cmake libxi-dev g++ libgl1-mesa-dev libglu1-mesa-dev zip git golang
+  - mkdir -p /data/gopath
+  - GOPATH=/data/gopath go get github.com/c4milo/github-release
 
 stages:
   - build
@@ -21,5 +22,6 @@ build:
     - cp $(find x86_64-w64-mingw32_out/install -type f) out/bin/Windows/
     - cd out
     - zip get_image.zip $(find . -type f)
-    - dpl --provider=releases --skip_cleanup --api-key=$GITHUB_RELEASES_API_KEY --repo=paulthomson/get-image --file=get_image.zip --release-number="v-$CI_BUILD_REF"
+    - GOPATH=/data/gopath PATH=/data/gopath/bin:$PATH GITHUB_TOKEN=$GITHUB_RELEASES_API_KEY github-release paulthomson/get-image v-${CI_BUILD_REF} ${CI_BUILD_REF} $(echo -e "Automated build.\n$(git log --graph -n 3 --abbrev-commit --pretty=format:%h - %s <%an>)")
+
 
