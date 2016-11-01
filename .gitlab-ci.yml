@@ -20,10 +20,10 @@ deploy:
   script:
     - apt-get -y install ruby-dev
     - gem install dpl
-    - mkdir -p out/Linux
-    - cp linux_out/install/bin/* out/Linux
-    - mkdir -p out/Windows
-    - cp x86_64-w64-mingw32_out/install/bin/* out/Windows
-    - zip get_image.zip out/*/*
+    - mkdir -p out/bin/Linux
+    - cp $(find linux_out/install -type f) out/bin/Linux/
+    - mkdir -p out/bin/Windows
+    - cp $(find x86_64-w64-mingw32_out/install -type f) out/bin/Windows/
+    - zip get_image.zip $(find out/ -type f)
     - dpl --provider=releases --api-key=$GITHUB_RELEASES_API_KEY --repo=paulthomson/get-image --file=get_image.zip --release-number="v-$CI_BUILD_REF"
 
