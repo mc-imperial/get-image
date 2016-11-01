@@ -1,11 +1,11 @@
 image: ubuntu:14.04
 before_script:
   - apt-get update -y
-  - apt-get -y install gcc-mingw-w64 python cmake libxi-dev g++ libgl1-mesa-dev libglu1-mesa-dev
+  - apt-get -y install gcc-mingw-w64 python cmake libxi-dev g++ libgl1-mesa-dev libglu1-mesa-dev ruby-dev
+  - gem install dpl
 
 stages:
   - build
-  - deploy
 
 build:
   stage: build
@@ -14,12 +14,7 @@ build:
     - ./build
     - cd ../x86_64-w64-mingw32_out
     - ./build
-
-deploy:
-  stage: deploy
-  script:
-    - apt-get -y install ruby-dev
-    - gem install dpl
+    - cd ..
     - mkdir -p out/bin/Linux
     - cp $(find linux_out/install -type f) out/bin/Linux/
     - mkdir -p out/bin/Windows
