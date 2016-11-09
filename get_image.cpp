@@ -9,8 +9,16 @@
 #include <vector>
 #include <cassert>
 #include "lodepng.h"
+
 #include <GL/glew.h>
-#include <GL/freeglut.h>
+#ifdef __APPLE__
+	#include <OpenGL/gl.h>
+	#include <OpenGl/glu.h>
+	#include <GLUT/glut.h>
+#else
+	#include <GL/freeglut.h>
+#endif
+
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846

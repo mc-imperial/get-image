@@ -9,6 +9,14 @@ find_package(OpenGL REQUIRED)
 include(ExternalProject)
 INCLUDE(GNUInstallDirs)
 
+if(APPLE)
+	find_package(OpenGL REQUIRED)
+	find_package(GLUT REQUIRED)
+	set(
+	LINK_LIBS 
+	${OPENGL_LIBRARIES}
+	${GLUT_LIBRARIES})
+else()
 ExternalProject_Add(
 	GLUT
 	URL http://prdownloads.sourceforge.net/freeglut/freeglut-3.0.0.tar.gz
@@ -19,6 +27,8 @@ ExternalProject_Add(
 		-DFREEGLUT_BUILD_DEMOS=0
 	INSTALL_COMMAND cmake -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/install -P cmake_install.cmake
 	)
+endif()
+
 
 ExternalProject_Add(
 	GLEW

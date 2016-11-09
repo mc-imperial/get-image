@@ -1,8 +1,17 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+
 #include <GL/glew.h>
-#include <GL/freeglut.h>
+#ifdef __APPLE__
+	#include <OpenGL/gl.h>
+	#include <OpenGl/glu.h>
+	#include <GLUT/glut.h>
+#else
+	#include <GL/freeglut.h>
+#endif
+
+
 
 void
 add_line (std::stringstream& json_ss, std::stringstream& line, int indent)

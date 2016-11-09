@@ -1,0 +1,12 @@
+Notes on OS X cross compiling:
+
+SDKROOT=/usr/osxcross/SDK/MacOSX10.10.sdk
+export MACOSX_DEPLOYMENT_TARGET=10.10
+cd /usr/osxcross/tools/
+./osxcross-macports install xorg-server xorg-libXi libGLU (installs mesa)
+./osxcross-macports install mesa libGLU xorg-libXrandr xorg-libXxf86vm
+
+
+export CMAKE_PREFIX_PATH=/usr/osxcross/macports/pkgs/opt/local
+
+

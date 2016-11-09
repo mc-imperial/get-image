@@ -1,0 +1,14 @@
+#!/bin/bash
+set -x
+set -e
+set -u
+
+mkdir -p temp
+cd temp
+cmake -G "Unix Makefiles" ../.. -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=../x86_64-apple-darwin14.cmake
+# Don't need these. Instead, uses OpenGL "framework" provided by OS X. 
+#   -DOPENGL_gl_LIBRARY:FILEPATH=/usr/osxcross/macports/pkgs/opt/local/lib/libGL.dylib \
+#   -DOPENGL_glu_LIBRARY:FILEPATH=/usr/osxcross/macports/pkgs/opt/local/lib/libGLU.dylib
+cmake --build . --config Release
+cmake -DCMAKE_INSTALL_PREFIX=../install -P cmake_install.cmake
+
