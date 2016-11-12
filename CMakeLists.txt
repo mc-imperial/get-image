@@ -71,8 +71,10 @@ elseif(UNIX)
 		${OPENGL_gl_LIBRARY}
 		${X11_LIBRARIES}
 		${X11_Xxf86vm_LIB}
-		${X11_Xi_LIB}
-		${X11_Xrandr_LIB})
+		${X11_Xi_LIB})
+		if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
+			set(LINK_LIBS ${LINK_LIBS} ${X11_Xrandr_LIB})
+		endif()
 	endif()
 	
 endif()
