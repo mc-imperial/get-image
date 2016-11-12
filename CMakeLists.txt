@@ -52,12 +52,7 @@ if(MINGW)
 	winmm.a
 	${OPENGL_gl_LIBRARY})
 
-
 elseif(WIN32)
-	# hacks required to ensure static libraries are found first
-	#set(CMAKE_FIND_LIBRARY_PREFIXES "lib" "")
-	#set(CMAKE_FIND_LIBRARY_SUFFIXES "_static.lib" "s.lib" ".lib")
-
 	set(
 	LINK_LIBS 
 	"${CMAKE_BINARY_DIR}/install/lib/libfreeglut_static.a" 
@@ -82,11 +77,6 @@ elseif(UNIX)
 endif()
 
 
-if(CMAKE_COMPILER_IS_GNUCXX)
-	set (CMAKE_CXX_FLAGS "-Wall -std=c++11 ${CMAKE_CXX_FLAGS}")
-	set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
-endif()
-
 add_definitions(-DGLEW_STATIC -DFREEGLUT_STATIC)
 
 
@@ -95,6 +85,11 @@ set(INCLUDE_DIRS ${OPENGL_INCLUDE_DIR} ${CMAKE_BINARY_DIR}/install/include)
 add_executable(get_image get_image.cpp lodepng.cpp)
 add_executable(get_gl_info get_gl_info.cpp)
 
+if(CMAKE_COMPILER_IS_GNUCXX)
+	set_target_properties(get_image get_gl_info PROPERTIES LINK_SEARCH_START_STATIC 1 LINK_SEARCH_END_STATIC 1)
+	set(CMAKE_CXX_FLAGS "-Wall -std=c++11 ${CMAKE_CXX_FLAGS}")
+	set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++ -static -Wl,-Bstatic")
+endif()
 
 target_include_directories(get_image PRIVATE ${INCLUDE_DIRS})
 target_link_libraries(get_image ${LINK_LIBS})
