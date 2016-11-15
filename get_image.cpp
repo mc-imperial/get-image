@@ -12,11 +12,11 @@
 
 #include <GL/glew.h>
 #ifdef __APPLE__
-	#include <OpenGL/gl.h>
-	#include <OpenGl/glu.h>
-	#include <GLUT/glut.h>
+    #include <OpenGL/gl.h>
+    #include <OpenGl/glu.h>
+    #include <GLUT/glut.h>
 #else
-	#include <GL/freeglut.h>
+    #include <GL/freeglut.h>
 #endif
 
 
@@ -266,7 +266,12 @@ void idle()
     saved = true;
     std::vector<std::uint8_t> data(WIDTH * HEIGHT * CHANNELS);
     glReadPixels(0, 0, WIDTH, HEIGHT, GL_RGBA, GL_UNSIGNED_BYTE, &data[0]);
-    unsigned png_error = lodepng::encode(output, data, WIDTH, HEIGHT);
+    std::vector<std::uint8_t> flipped_data(WIDTH * HEIGHT * CHANNELS);
+    for (int h = 0; h < HEIGHT ; h++)
+        for (int col = 0; col < WIDTH * CHANNELS; col++)
+            flipped_data[h * WIDTH + col] =
+                data[(HEIGHT - h - 1) * WIDTH + col];
+    unsigned png_error = lodepng::encode(output, flipped_data, WIDTH, HEIGHT);
     if (png_error)
         printf("Error producing PNG file: %s", lodepng_error_text(png_error));
     if (persist)
