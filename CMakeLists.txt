@@ -55,8 +55,8 @@ if(MINGW)
 elseif(WIN32)
 	set(
 	LINK_LIBS 
-	"${CMAKE_BINARY_DIR}/install/lib/libfreeglut_static.a" 
-	"${CMAKE_BINARY_DIR}/install/lib/libglew32.a"
+	"${CMAKE_BINARY_DIR}/install/lib/freeglut_static.lib" 
+	"${CMAKE_BINARY_DIR}/install/lib/libglew32.lib"
 	${OPENGL_gl_LIBRARY})
 
 elseif(UNIX)
