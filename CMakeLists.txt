@@ -68,13 +68,11 @@ elseif(UNIX)
 		LINK_LIBS 
 		"${CMAKE_BINARY_DIR}/install/${CMAKE_INSTALL_LIBDIR}/libfreeglut.a" 
 		"${CMAKE_BINARY_DIR}/install/${CMAKE_INSTALL_LIBDIR}/libGLEW.a"
-		${OPENGL_gl_LIBRARY}
 		${X11_LIBRARIES}
+		${X11_Xrandr_LIB}
+		${X11_Xi_LIB}
 		${X11_Xxf86vm_LIB}
-		${X11_Xi_LIB})
-		if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
-			set(LINK_LIBS ${LINK_LIBS} ${X11_Xrandr_LIB})
-		endif()
+		${OPENGL_gl_LIBRARY})
 	endif()
 	
 endif()

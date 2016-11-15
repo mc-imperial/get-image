@@ -6,7 +6,7 @@ RUN \
   apt-get -y install \
     ruby-dev zip \
     gcc-mingw-w64 \
-    g++ libxi-dev libgl1-mesa-dev libglu1-mesa-dev \
+    g++ libxi-dev libgl1-mesa-dev libglu1-mesa-dev libxrandr-dev \
     cmake
 
 #    automake autogen bzip2 ca-certificates curl file git gzip libcurl4-openssl-dev libssl-dev make ncurses-dev pkg-config python \
