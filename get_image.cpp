@@ -65,6 +65,8 @@ bool persist = false,
   animate = false;
 GLuint program;
 
+const char* vertex_shader_wo_version = "attribute vec2 coord2d;\nvarying vec2 surfacePosition;\nvoid main(void) {\ngl_Position = vec4(coord2d, 0.0, 1.0);\nsurfacePosition = coord2d;\n}";
+
 bool rendered = false;
 
 bool
@@ -96,16 +98,18 @@ parse_args(int argc, char* argv[])
     output = argv[++i];
     continue;
       }
+      else if (!curr_arg.compare("--vertex")) {
+    vertex_shader = argv[++i];
+    continue;
+      }
       printf("Unknown argument %s\n", curr_arg.c_str());
       continue;
     }
-    if (vertex_shader == "")
-      vertex_shader = curr_arg;
-    else if (fragment_shader == "")
+    if (fragment_shader == "")
       fragment_shader = curr_arg;
     else printf("Ignoring extra argument %s\n", curr_arg.c_str());
   }
-  return (vertex_shader != "" && fragment_shader != "");
+  return (fragment_shader != "");
 }
 
 void
@@ -133,39 +137,16 @@ keyboard_listener(unsigned char key, int x, int y)
   exit(0);
 }
 
-void init(std::string vertexShader, std::string fragmentShader)
+void init()
 {
   int compile_ok;
   program = glCreateProgram();
 
   // Shader start
-  GLuint shd0 = glCreateShader(GL_VERTEX_SHADER);
-  std::ifstream shdf0(vertexShader);
-  if(!shdf0) {
-    fprintf(stderr, "Vertex shader %s not found\n", vertexShader.c_str());
-    exit(1);
-  }
-  std::stringstream shds0;
-  shds0 << shdf0.rdbuf();
-  std::string shdstr0= shds0.str();
-  const char *shdchr0= shdstr0.c_str();
-  glShaderSource(shd0, 1, &shdchr0, NULL);
-  fprintf(stderr, "Compiling vertex shader\n");
-  glCompileShader(shd0);
-  glGetShaderiv(shd0, GL_COMPILE_STATUS, &compile_ok);
-  if (!compile_ok) {
-    fprintf(stderr, "Error compiling vertex shader\n");
-    report_error_and_exit(shd0, 1);
-  }
-  fprintf(stderr, "Vertex shader compiled successfully\n");
-  glAttachShader(program, shd0);
-  // Shader end
-
-  // Shader start
   GLuint shd1 = glCreateShader(GL_FRAGMENT_SHADER);
-  std::ifstream shdf1(fragmentShader);
+  std::ifstream shdf1(fragment_shader);
   if(!shdf1) {
-    fprintf(stderr, "Fragment shader %s not found\n", fragmentShader.c_str());
+    fprintf(stderr, "Fragment shader %s not found\n", fragment_shader.c_str());
     exit(1);
   }
   std::stringstream shds1;
@@ -186,6 +167,45 @@ void init(std::string vertexShader, std::string fragmentShader)
     exit(0);
   }
   glAttachShader(program, shd1);
+  // Shader end
+  
+  // Start: construct vertex shader string
+  std::string shdstr0;
+  if(vertex_shader == "") {
+    // Use embedded vertex shader.
+    size_t i = shdstr1.find('\n');
+    if(i != std::string::npos && shdstr1[0] == '#') {
+      shdstr0 = shdstr1.substr(0,i);
+      shdstr0 += "\n";
+    } else {
+      fprintf(stderr, "Warning: Could not find #version string of fragment shader.\n");
+    }
+    shdstr0 += vertex_shader_wo_version;
+  } else {
+    std::ifstream shdf0(vertex_shader);
+    if(!shdf0) {
+      fprintf(stderr, "Vertex shader %s not found\n", vertex_shader.c_str());
+      exit(1);
+    }
+    std::stringstream shds0;
+    shds0 << shdf0.rdbuf();
+    shdstr0 = shds0.str();
+  }
+  // End: construct vertex shader string
+
+  // Shader start
+  GLuint shd0 = glCreateShader(GL_VERTEX_SHADER);
+  const char *shdchr0= shdstr0.c_str();
+  glShaderSource(shd0, 1, &shdchr0, NULL);
+  fprintf(stderr, "Compiling vertex shader\n");
+  glCompileShader(shd0);
+  glGetShaderiv(shd0, GL_COMPILE_STATUS, &compile_ok);
+  if (!compile_ok) {
+    fprintf(stderr, "Error compiling vertex shader\n");
+    report_error_and_exit(shd0, 1);
+  }
+  fprintf(stderr, "Vertex shader compiled successfully\n");
+  glAttachShader(program, shd0);
   // Shader end
 
   fprintf(stderr, "Linking program\n");
@@ -293,7 +313,7 @@ int main(int argc, char* argv[])
 #endif
 
   if(!parse_args(argc, argv)) {
-    std::cerr << "Requires vertex shader and fragment shader arguments!" << std::endl;
+    std::cerr << "Requires fragment shader argument!" << std::endl;
     exit(1);
   }
 
@@ -303,7 +323,7 @@ int main(int argc, char* argv[])
   glutInitWindowSize(WIDTH, HEIGHT);
   glutCreateWindow("get_image");
   glewInit();
-  init(std::string(argv[1]), std::string(argv[2]));
+  init();
   glutDisplayFunc(display);
   glutIdleFunc(idle);
   glutMainLoop();
