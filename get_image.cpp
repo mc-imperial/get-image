@@ -289,8 +289,8 @@ void idle()
     std::vector<std::uint8_t> flipped_data(WIDTH * HEIGHT * CHANNELS);
     for (int h = 0; h < HEIGHT ; h++)
         for (int col = 0; col < WIDTH * CHANNELS; col++)
-            flipped_data[h * WIDTH + col] =
-                data[(HEIGHT - h - 1) * WIDTH + col];
+            flipped_data[h * WIDTH * CHANNELS + col] = 
+                data[(HEIGHT - h - 1) * WIDTH * CHANNELS + col];
     unsigned png_error = lodepng::encode(output, flipped_data, WIDTH, HEIGHT);
     if (png_error)
         printf("Error producing PNG file: %s", lodepng_error_text(png_error));
