@@ -86,6 +86,9 @@ set(INCLUDE_DIRS ${OPENGL_INCLUDE_DIR} ${CMAKE_BINARY_DIR}/install/include)
 add_executable(get_image get_image.cpp lodepng.cpp)
 add_executable(get_gl_info get_gl_info.cpp)
 
+add_dependencies(get_image GLUT GLEW)
+add_dependencies(get_gl_info GLUT GLEW)
+
 if(CMAKE_COMPILER_IS_GNUCXX)
 	set(CMAKE_CXX_FLAGS "-Wall -std=c++11 ${CMAKE_CXX_FLAGS}")
 	set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
