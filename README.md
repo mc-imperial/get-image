@@ -1,4 +1,8 @@
-# get-image
+# Get image
+
+## Build
+
+You will need CMake.
 
 1. Change into `linux_out`.
 2. Execute `./build`.
@@ -6,7 +10,9 @@
 
 You can change to `x86_64-w64-mingw32_out` to cross-compile for Windows.
 
-# Usage
+There is also a simple Makefile if the above does not work. 
+
+## Usage
 
 `./get_image <PATH_TO_FRAGMENT_SHADER>`
 
