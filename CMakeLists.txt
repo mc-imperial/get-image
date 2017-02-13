@@ -43,12 +43,15 @@ ExternalProject_Add(
 
 set(CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/install ${CMAKE_PREFIX_PATH})
 
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+	set(DEBUG_D "d")
+endif()
 
 if(MINGW)
 	set(
 	LINK_LIBS 
 	"${CMAKE_BINARY_DIR}/install/lib/libfreeglut_static.a" 
-	"${CMAKE_BINARY_DIR}/install/lib/libglew32.a"
+	"${CMAKE_BINARY_DIR}/install/lib/libglew32${DEBUG_D}.a"
 	winmm.a
 	${OPENGL_gl_LIBRARY})
 
@@ -56,7 +59,7 @@ elseif(WIN32)
 	set(
 	LINK_LIBS 
 	"${CMAKE_BINARY_DIR}/install/lib/freeglut_static.lib" 
-	"${CMAKE_BINARY_DIR}/install/lib/libglew32.lib"
+	"${CMAKE_BINARY_DIR}/install/lib/libglew32${DEBUG_D}.lib"
 	${OPENGL_gl_LIBRARY})
 
 elseif(UNIX)
@@ -67,7 +70,7 @@ elseif(UNIX)
 		set(
 		LINK_LIBS 
 		"${CMAKE_BINARY_DIR}/install/${CMAKE_INSTALL_LIBDIR}/libfreeglut.a" 
-		"${CMAKE_BINARY_DIR}/install/${CMAKE_INSTALL_LIBDIR}/libGLEW.a"
+		"${CMAKE_BINARY_DIR}/install/${CMAKE_INSTALL_LIBDIR}/libGLEW${DEBUG_D}.a"
 		${X11_LIBRARIES}
 		${X11_Xrandr_LIB}
 		${X11_Xi_LIB}

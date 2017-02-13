@@ -1,4 +1,7 @@
 /*_out/install/
 /*_out/temp/
 /.idea/
+/cmake-build-debug/
+/cmake-build-release/
+c_cpp_properties.json
 
